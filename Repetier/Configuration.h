@@ -30,7 +30,7 @@
 // Gen7 1.1 and above = 7
 // Teensylu (at90usb) = 8 // requires Teensyduino
 // Printrboard (at90usb) = 9 // requires Teensyduino
-#define MOTHERBOARD 5
+#define MOTHERBOARD 33
 #include <avr/io.h>
 #include "pins.h"
 
@@ -53,11 +53,11 @@
 
 
 /** \brief Number of steps for a 1mm move in x direction. Overridden if EEPROM activated. */
-#define XAXIS_STEPS_PER_MM 40
+#define XAXIS_STEPS_PER_MM 3200/50.8
 /** \brief Number of steps for a 1mm move in y direction  Overridden if EEPROM activated.*/
-#define YAXIS_STEPS_PER_MM 40
+#define YAXIS_STEPS_PER_MM 3200/50.8
 /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-#define ZAXIS_STEPS_PER_MM 3360
+#define ZAXIS_STEPS_PER_MM 128000/25.4
 
 // ##########################################################################################
 // ##                           Extruder configuration                                     ##
@@ -69,7 +69,9 @@
 #define EXT0_X_OFFSET 0
 #define EXT0_Y_OFFSET 0
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
-#define EXT0_STEPS_PER_MM 373
+//#define EXT0_STEPS_PER_MM 564.38
+//#define EXT0_STEPS_PER_MM 552.1 //1.75mm
+#define EXT0_STEPS_PER_MM 604.67 // 3mm
 // What type of sensor is used?
 // 1 is 100k thermistor
 // 2 is 200k thermistor
@@ -84,7 +86,7 @@
 // 99 Generic thermistor table
 // 100 is AD595
 // 101 is MAX6675
-#define EXT0_TEMPSENSOR_TYPE 5
+#define EXT0_TEMPSENSOR_TYPE 7
 // Position in analog input table below for reading temperatures or pin enabling SS for MAX6675
 #define EXT0_TEMPSENSOR_PIN 0
 // WHich pin enables the heater
@@ -103,7 +105,7 @@
 #define EXT0_MAX_FEEDRATE 1200
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_START_FEEDRATE 10
+#define EXT0_MAX_START_FEEDRATE 250
 // Acceleration in mm/s^2
 //  Overridden if EEPROM activated.
 #define EXT0_MAX_ACCELERATION 10000
@@ -127,7 +129,7 @@ Values for startes:
 The precice values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 130
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 180
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -153,9 +155,9 @@ WATCH OUT: This value was in 0,01 units in earlier versions!
 /** Number of entries in the user thermistortable 0. Set to 0 to disable it. */
 #define NUM_TEMPS_USERTHERMISTOR0 28
 /** Number of entries in the user thermistortable 1. Set to 0 to disable it. */
-#define NUM_TEMPS_USERTHERMISTOR1 0
+#define NUM_TEMPS_USERTHERMISTOR1 49
 /** Number of entries in the user thermistortable 2. Set to 0 to disable it. */
-#define NUM_TEMPS_USERTHERMISTOR2 0
+#define NUM_TEMPS_USERTHERMISTOR2 54
 /** \brief Set PID scaling 
 
 PID values assume a usable range from 0-255. This can be further limited to EXT0_PID_MAX by to methods.
@@ -201,8 +203,19 @@ If you have a PTC thermistor instead of a NTC thermistor, keep the adc values in
   {90*4,210*8},{107*4,200*8},{128*4,190*8},{154*4,180*8},{184*4,170*8},{221*4,160*8},{265*4,150*8},{316*4,140*8},{375*4,130*8},\
   {441*4,120*8},{513*4,110*8},{588*4,100*8},{734*4,80*8},{856*4,60*8},{938*4,40*8},{986*4,20*8},{1008*4,0*8},{1018*4,-20*8}	}
 
-#define USER_THERMISTORTABLE1  {}  
-#define USER_THERMISTORTABLE2  {}  
+#define USER_THERMISTORTABLE1  {\
+   {1, 1319},{22, 489},{43, 410},{64, 370},{85, 343},{106, 323},{127, 308},{148, 295},{169, 284},{190, 275},{211, 266},{232, 258},\
+   {253, 251},{274, 245},{295, 239},{316, 233},{337, 228},{358, 223},{379, 218},{400, 214},{421, 209},{442, 205},{463, 201},\
+   {484, 197},{505, 193},{526, 189},{547, 185},{568, 181},{589, 178},{610, 174},{631, 170},{652, 166},{673, 163},{694, 159},\
+   {715, 155},{736, 151},{757, 147},{778, 143},{799, 138},{820, 134},{841, 129},{862, 124},{883, 118},{904, 112},{925, 105},\
+   {946, 97},{967, 87},{988, 74},{1009, 52} }  
+   
+#define USER_THERMISTORTABLE2  {\
+   {46*4,270*8},{50*4,265*8},{54*4,260*8},{58*4,255*8},{62*4,250*8},{67*4,245*8},{72*4,240*8},{79*4,235*8},{85*4,230*8},{91*4,225*8},{99*4,220*8},{107*4,215*8},\
+   {116*4,210*8},{126*4,205*8},{136*4,200*8},{149*4,195*8},{160*4,190*8},{175*4,185*8},{191*4,180*8},{209*4,175*8},{224*4,170*8},{246*4,165*8},{267*4,160*8},\
+   {293*4,155*8},{316*4,150*8},{340*4,145*8},{364*4,140*8},{396*4,135*8},{425*4,130*8},{460*4,125*8},{489*4,120*8},{526*4,115*8},{558*4,110*8},{591*4,105*8},\
+   {628*4,100*8},{660*4,95*8},{696*4,90*8},{733*4,85*8},{761*4,80*8},{794*4,75*8},{819*4,70*8},{847*4,65*8},{870*4,60*8},{892*4,55*8},{911*4,50*8},{929*4,45*8},\
+   {944*4,40*8},{959*4,35*8},{971*4,30*8},{981*4,25*8},{989*4,20*8},{994*4,15*8},{1001*4,10*8},{1005*4,5*8} } 
 
 /** If defined, creates a thermistortable at startup.
 
@@ -226,18 +239,22 @@ The capacitor is for reducing noise from long thermistor cable. If you don't hav
 
 If you don't need the generic table, uncomment the following define.
 */
-//#define USE_GENERIC_THERMISTORTABLE 1
+#define USE_GENERIC_THERMISTORTABLE 1
 /** Reference resistance */
-#define GENERIC_THERM_R0 1042.7
+//#define GENERIC_THERM_R0 4000
+#define GENERIC_THERM_R0 100000
 /** Temperature at reference resistance */
-#define GENERIC_THERM_T0 170
+//#define GENERIC_THERM_T0 200
+#define GENERIC_THERM_T0 25
 /** Beta value of thermistor
 
 You can use the beta from the datasheet or compute it yourself. See
 http://reprap.org/wiki/MeasuringThermistorBeta
 for more details.
 */
-#define GENERIC_THERM_BETA 4036
+//#define GENERIC_THERM_BETA 4557
+//#define GENERIC_THERM_BETA 5133 // recalculated by Yuri
+#define GENERIC_THERM_BETA 3974
 #define GENERIC_THERM_R1 0
 #define GENERIC_THERM_R2 4700
 #define GENERIC_THERM_VREF 5
@@ -299,7 +316,7 @@ reading of the extruder and heated bed. */
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define MAXTEMP 275
+#define MAXTEMP 250
 
 /**
 Normally you need a PWM controlable output, to define different fan speeds. If you
@@ -350,12 +367,12 @@ one extruder with heated bed, write:
 #define ENDSTOPPULLUPS 0 // Comment this out (using // at the start of the line) to disable the endstop pullup resistors
 // The pullups are needed if you directly connect a mechanical endswitch between the signal and ground pins.
 //set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING false
-#define ENDSTOP_Y_MIN_INVERTING false
+#define ENDSTOP_X_MIN_INVERTING true
+#define ENDSTOP_Y_MIN_INVERTING true
 #define ENDSTOP_Z_MIN_INVERTING false
-#define ENDSTOP_X_MAX_INVERTING false
-#define ENDSTOP_Y_MAX_INVERTING false
-#define ENDSTOP_Z_MAX_INVERTING false
+//#define ENDSTOP_X_MAX_INVERTING false
+//#define ENDSTOP_Y_MAX_INVERTING false
+//#define ENDSTOP_Z_MAX_INVERTING false
 
 //If your axes are only moving in one direction, make sure the endstops are connected properly.
 //If your axes move in one direction ONLY when the endstops are triggered, set ENDSTOPS_INVERTING to true here
@@ -373,12 +390,12 @@ one extruder with heated bed, write:
 #define DISABLE_X false
 #define DISABLE_Y false
 #define DISABLE_Z true
-#define DISABLE_E false
+#define DISABLE_E true
 
 // Inverting axis direction
 #define INVERT_X_DIR false
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR true
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
@@ -387,9 +404,9 @@ one extruder with heated bed, write:
 #define Z_HOME_DIR -1
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x false
-#define min_software_endstop_y false
-#define min_software_endstop_z false
+#define min_software_endstop_x true
+#define min_software_endstop_y true
+#define min_software_endstop_z true
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true
@@ -412,8 +429,8 @@ one extruder with heated bed, write:
 // can set it on for safety.
 #define ALWAYS_CHECK_ENDSTOPS true
 // maximum positions in mm - only fixed numbers!
-#define X_MAX_LENGTH 200
-#define Y_MAX_LENGTH 200
+#define X_MAX_LENGTH 150
+#define Y_MAX_LENGTH 150
 #define Z_MAX_LENGTH 100
 
 // ##########################################################################################
@@ -505,7 +522,7 @@ Important: This is the speed, filament is pushed inside the extruder not the spe
 If you set the extruder steps_per_mm for 1mm pushed outside, cause skeinforge<40 needed it, you must
 decrease the value to reflect this. (*filament_diameter^2/nozzle_diameter^2)
 */
-#define EXTRUDER_SPEED 20.0
+#define EXTRUDER_SPEED 10.0
 
 /* \brief Minimum temperature for extruder operation
 
@@ -515,7 +532,7 @@ is at least molten. After havong some complains that the extruder does not work,
 it 0 as default.
 */
 
-#define MIN_EXTRUDER_TEMP 0
+#define MIN_EXTRUDER_TEMP 170
 /** \brief Activate ooze prevention system 
 
 The ooze prevention system tries to prevent ooze, by a fast retract of the filament every time
@@ -542,7 +559,7 @@ Caution: Don't enable anti-ooze in your slicer if you are using this.
 
  Overridden if EEPROM activated.
 */
-#define OPS_MODE 0
+#define OPS_MODE 2
 
 /** \brief Minimum distance for retraction.
 
@@ -559,7 +576,7 @@ retraction with infill, where the angle to the perimeter needs a short stop. Uni
 /** \brief Retraction distance in mm. If you want to enable OPS only sometimes, compile with
 OPS support and set retraction distance to 0. If you set it to e.g. 3 in your eeprom settings it is enabled.
  Overridden if EEPROM activated.*/
-#define OPS_RETRACT_DISTANCE 3.0
+#define OPS_RETRACT_DISTANCE 0.5
 
 /** \brief Backslash produced by extruder reversal
 
@@ -683,7 +700,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 /** Comment out (using // at the start of the line) to disable SD support: */
 //#define SDSUPPORT 1
 /** Show extended directory including file length. Don't use this with pronterface! */
-#define SD_EXTENDED_DIR
+//#define SD_EXTENDED_DIR
 
 // ##########################################################################################
 // ##                                  Debug configuration                                 ##
@@ -693,7 +710,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 //#define DEBUG_QUEUE_MOVE
 /** Allows M111 to set bit 5 (16) which disables all commands except M111. This can be used
 to test your data througput or search for communication problems. */
-#define INCLUDE_DEBUG_COMMUNICATION
+//#define INCLUDE_DEBUG_COMMUNICATION
 /** Allows M111 so set bit 6 (32) which disables moves, at the first tried step. In combination
 with a dry run, you can test the speed of path computations, which are still performed. */
 //#define INCLUDE_DEBUG_NO_MOVE
@@ -701,7 +718,7 @@ with a dry run, you can test the speed of path computations, which are still per
 values >500 for safety, since it doesn't catch every function call. Nice to tweak cache
 usage or for seraching for memory induced errors. Switch it off for production, it costs execution time. */
 //#define DEBUG_FREE_MEMORY
-#define DEBUG_ADVANCE
+//#define DEBUG_ADVANCE
 /** \brief print ops related debug info. */
 //#define DEBUG_OPS
 /** If enabled, writes the created generic table to serial port at startup. */
