@@ -268,14 +268,23 @@ for more details.
 
 // ############# Heated bed configuration ########################
 
-/** \brief Switches fast between config for heated bed and non heated bed */
+/** \brief Switches fast between config for heated bed and non heated bed. Default setting is autodetect
+assuming only 2 heater outputs are available. */
+#if HEATER_1_PIN>-1 && NUM_EXTRUDER==1
+#define HAVE_HEATED_BED true
+#else
 #define HAVE_HEATED_BED false
+#endif
+//#define HAVE_HEATED_BED false  // Override autodetected value
 
 #if HAVE_HEATED_BED==true
 // Select type of your heated bed. It's the same as for EXT0_TEMPSENSOR_TYPE
 // set to 0 if you don't have a heated bed
-#define HEATED_BED_SENSOR_TYPE 0
-/** Index of analog sensor to read temperature of heated bed. look at ANALOG_INPUT_CHANNELS for the position or to add the Arduino pin id there. */
+#define HEATED_BED_SENSOR_TYPE 1
+/** Index of analog sensor to read temperature of heated bed. 
+THIS IS NOT A PIN NUMBER - IT'S A REFERENCE TO A TABLE WITH PIN NUMBERS!!!
+Look at ANALOG_INPUT_CHANNELS for the position 
+or to add the Arduino pin id there. */
 #define HEATED_BED_SENSOR_PIN 1
 /** \brief Pin to enable heater for bed. */
 #define HEATED_BED_HEATER_PIN HEATER_1_PIN
@@ -364,7 +373,7 @@ one extruder with heated bed, write:
 // ##########################################################################################
 
 //// Endstop Settings
-#define ENDSTOPPULLUPS 0 // Comment this out (using // at the start of the line) to disable the endstop pullup resistors
+#define ENDSTOPPULLUPS // Comment this out (using // at the start of the line) to disable the endstop pullup resistors
 // The pullups are needed if you directly connect a mechanical endswitch between the signal and ground pins.
 //set to true to invert the logic of the endstops
 #define ENDSTOP_X_MIN_INVERTING true
@@ -647,7 +656,12 @@ This number of moves can be cached in advance. If you wan't to cache more, incre
 many very short moves the cache may go empty. The minimum value is 5.
 */
 #define MOVE_CACHE_SIZE 16
-
+/* How many line segments can the path planner use for path optimization. The maximum possible
+value is MOVE_CACHE_SIZE-2. Higher values need more computation time, which can cause blocking for many
+short subsequent moves. If this happens you will see BLK messages in your log and then you now the
+value is to high for your printer settings.
+*/
+#define PATH_PLANNER_CHECK_SEGMENTS 7
 /** \brief Low filled cache size. 
 
 If the cache contains less then MOVE_CACHE_LOW segments, the time per segment is limited to LOW_TICKS_PER_MOVE clock cycles.
@@ -658,9 +672,9 @@ don't care about empty buffers during print.
 /** \brief Cycles per move, if move cache is low. 
 
 This value must be high enough, that the buffer has time to fill up. The problem only occurs at the beginning of a print or
-if you are printing many very short segments at high speed.
+if you are printing many very short segments at high speed. Higher delays here allow higher values in PATH_PLANNER_CHECK_SEGMENTS.
 */
-#define LOW_TICKS_PER_MOVE 200000
+#define LOW_TICKS_PER_MOVE 400000
 /** \brief Cache size for incoming commands.
 
 There should be no reason to increase this cache. Commands are nearly immediately send to
