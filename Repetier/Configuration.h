@@ -155,7 +155,7 @@ WATCH OUT: This value was in 0,01 units in earlier versions!
 /** Number of entries in the user thermistortable 0. Set to 0 to disable it. */
 #define NUM_TEMPS_USERTHERMISTOR0 28
 /** Number of entries in the user thermistortable 1. Set to 0 to disable it. */
-#define NUM_TEMPS_USERTHERMISTOR1 49
+#define NUM_TEMPS_USERTHERMISTOR1 20
 /** Number of entries in the user thermistortable 2. Set to 0 to disable it. */
 #define NUM_TEMPS_USERTHERMISTOR2 54
 /** \brief Set PID scaling 
@@ -204,11 +204,8 @@ If you have a PTC thermistor instead of a NTC thermistor, keep the adc values in
   {441*4,120*8},{513*4,110*8},{588*4,100*8},{734*4,80*8},{856*4,60*8},{938*4,40*8},{986*4,20*8},{1008*4,0*8},{1018*4,-20*8}	}
 
 #define USER_THERMISTORTABLE1  {\
-   {1, 1319},{22, 489},{43, 410},{64, 370},{85, 343},{106, 323},{127, 308},{148, 295},{169, 284},{190, 275},{211, 266},{232, 258},\
-   {253, 251},{274, 245},{295, 239},{316, 233},{337, 228},{358, 223},{379, 218},{400, 214},{421, 209},{442, 205},{463, 201},\
-   {484, 197},{505, 193},{526, 189},{547, 185},{568, 181},{589, 178},{610, 174},{631, 170},{652, 166},{673, 163},{694, 159},\
-   {715, 155},{736, 151},{757, 147},{778, 143},{799, 138},{820, 134},{841, 129},{862, 124},{883, 118},{904, 112},{925, 105},\
-   {946, 97},{967, 87},{988, 74},{1009, 52} }  
+   {1*4, 704*8},{54*4, 216*8},{107*4, 175*8},{160*4, 152*8},{213*4, 137*8},{266*4, 125*8},{319*4, 115*8},{372*4, 106*8},{425*4, 99*8},{478*4, 91*8},{531*4, 85*8},\
+   {584*4, 78*8},{637*4, 71*8},{690*4, 65*8},{743*4, 58*8},{796*4, 50*8},{849*4, 42*8},{902*4, 31*8},{955*4, 17*8},{1008*4, 0*8} }  
    
 #define USER_THERMISTORTABLE2  {\
    {46*4,270*8},{50*4,265*8},{54*4,260*8},{58*4,255*8},{62*4,250*8},{67*4,245*8},{72*4,240*8},{79*4,235*8},{85*4,230*8},{91*4,225*8},{99*4,220*8},{107*4,215*8},\
@@ -275,7 +272,7 @@ assuming only 2 heater outputs are available. */
 #else
 #define HAVE_HEATED_BED false
 #endif
-//#define HAVE_HEATED_BED false  // Override autodetected value
+#define HAVE_HEATED_BED true  // Override autodetected value
 
 #if HAVE_HEATED_BED==true
 // Select type of your heated bed. It's the same as for EXT0_TEMPSENSOR_TYPE
@@ -295,6 +292,9 @@ or to add the Arduino pin id there. */
 #define HEATED_BED_SENSOR_PIN -1
 #define HEATED_BED_HEATER_PIN -1
 #endif
+
+// Huxley heated bed
+#define HUXLEY_HEATED_BED 1
 
 // uncomment to use AREF for reference voltage
 // on a GEN6 you want AVCC
@@ -438,9 +438,9 @@ one extruder with heated bed, write:
 // can set it on for safety.
 #define ALWAYS_CHECK_ENDSTOPS true
 // maximum positions in mm - only fixed numbers!
-#define X_MAX_LENGTH 150
-#define Y_MAX_LENGTH 150
-#define Z_MAX_LENGTH 100
+#define X_MAX_LENGTH 145
+#define Y_MAX_LENGTH 133
+#define Z_MAX_LENGTH 94
 
 // ##########################################################################################
 // ##                           Movement settings                                          ##

@@ -262,7 +262,11 @@
 #define KILL_PIN           -1
 
 #define HEATER_0_PIN       10
-#define HEATER_1_PIN       8
+//#ifdef HUXLEY_HEATED_BED
+  #define HEATER_1_PIN      57
+//#else
+//  #define HEATER_1_PIN      8
+//#endif
 #define TEMP_0_PIN         13   // ANALOG NUMBERING
 #define TEMP_1_PIN         14   // ANALOG NUMBERING
 #define E0_PINS E_STEP_PIN,E_DIR_PIN,E_ENABLE_PIN,
@@ -307,10 +311,14 @@
   #define HEATER_0_PIN     12    // RAMPS 1.0
   #define HEATER_1_PIN     -1    // RAMPS 1.0
   #define FAN_PIN          11    // RAMPS 1.0
-
+  
 #else // RAMPS_V_1_1 or RAMPS_V_1_2
   #define HEATER_0_PIN     10    // RAMPS 1.1
-  #define HEATER_1_PIN      8    // RAMPS 1.1
+  #ifdef HUXLEY_HEATED_BED
+    #define HEATER_1_PIN      57
+  #else
+    #define HEATER_1_PIN      8    // RAMPS 1.1
+  #endif
   #define FAN_PIN           9    // RAMPS 1.1
 #endif
 
