@@ -322,6 +322,8 @@
   #define FAN_PIN           9    // RAMPS 1.1
 #endif
 
+#define BOARD_FAN_PIN    8
+
 #define TEMP_0_PIN          2    // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!!
 #define TEMP_1_PIN          1    // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!!
 #endif

@@ -821,9 +821,13 @@ inline float computeJerk(PrintLine *p1,PrintLine *p2) {
 }
 inline float safeSpeed(PrintLine *p) {
   float safe = printer_state.maxJerk*0.5;
-  if(p->dir & 64)
-    if(abs(p->speedZ)>printer_state.maxZJerk*0.5) safe = printer_state.maxZJerk*0.5*p->fullSpeed/abs(p->speedZ);
-  return (safe<p->fullSpeed?safe:p->fullSpeed);
+  if(p->dir & 64) {
+    if(abs(p->speedZ)>printer_state.maxZJerk*0.5) {
+      float safe2 = printer_state.maxZJerk*0.5*p->fullSpeed/abs(p->speedZ);
+      if(safe2<safe) safe = safe2;
+    }
+  }
+  return (safefullSpeed?safe:p->fullSpeed);
 }
 inline unsigned long U16SquaredToU32(unsigned int val) {
   long res;
