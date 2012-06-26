@@ -33,12 +33,29 @@
 // 1-999     : Autorepeat
 // 1000-1999 : Execute
 // 2000-2999 : Write code
-// 3000-3999 : Show menu
+// 4000-4999 : Show menu
+// Add UI_ACTION_TOPMENU to show a menu as top menu
 // ----------------------------------------------------------------------------
+
+#define UI_ACTION_TOPMENU 8192
 
 #define UI_ACTION_NEXT 1
 #define UI_ACTION_PREVIOUS 2
 
+#define UI_ACTION_X_UP                 100
+#define UI_ACTION_X_DOWN               101
+#define UI_ACTION_Y_UP                 102
+#define UI_ACTION_Y_DOWN               103
+#define UI_ACTION_Z_UP                 104
+#define UI_ACTION_Z_DOWN               105
+#define UI_ACTION_EXTRUDER_UP          106
+#define UI_ACTION_EXTRUDER_DOWN        107
+#define UI_ACTION_EXTRUDER_TEMP_UP     108
+#define UI_ACTION_EXTRUDER_TEMP_DOWN   109
+#define UI_ACTION_HEATED_BED_UP        110
+#define UI_ACTION_HEATED_BED_DOWN      111
+#define UI_ACTION_FAN_UP               112
+#define UI_ACTION_FAN_DOWN             113
 
 #define UI_ACTION_DUMMY 10000
 #define UI_ACTION_BACK                  1000
@@ -119,7 +136,7 @@
 #define UI_ACTION_DEBUG_ERROR           1076
 #define UI_ACTION_DEBUG_DRYRUN          1077
 #define UI_ACTION_POWER                 1078
-#define UI_ACTION_PREHEAT               1079
+#define UI_ACTION_PREHEAT_PLA           1079
 #define UI_ACTION_COOLDOWN              1080
 #define UI_ACTION_HEATED_BED_OFF        1081
 #define UI_ACTION_EXTRUDER0_OFF         1082
@@ -134,6 +151,9 @@
 #define UI_ACTION_RESET_EXTRUDER        1091
 #define UI_ACTION_EXTRUDER_RELATIVE     1092
 #define UI_ACTION_SELECT_EXTRUDER0      1093
+#define UI_ACTION_ADVANCE_L             1094
+#define UI_ACTION_PREHEAT_ABS           1095
+#define UI_ACTION_FLOWRATE_MULTIPLY     1096
 
 #define UI_ACTION_MENU_XPOS             4000
 #define UI_ACTION_MENU_YPOS             4001
@@ -146,6 +166,17 @@
 #define UI_ACTION_MENU_EXTRUDER         4008
 #define UI_ACTION_MENU_POSITIONS        4009
 
+#define UI_ACTION_SHOW_USERMENU1        4101
+#define UI_ACTION_SHOW_USERMENU2        4102
+#define UI_ACTION_SHOW_USERMENU3        4103
+#define UI_ACTION_SHOW_USERMENU4        4104
+#define UI_ACTION_SHOW_USERMENU5        4105
+#define UI_ACTION_SHOW_USERMENU6        4106
+#define UI_ACTION_SHOW_USERMENU7        4107
+#define UI_ACTION_SHOW_USERMENU8        4108
+#define UI_ACTION_SHOW_USERMENU9        4109
+#define UI_ACTION_SHOW_USERMENU10       4110
+
 // Load basic language definition to make sure all values are defined
 #include "uilang.h"
 
@@ -154,7 +185,7 @@
 #include "fastio.h"
 
 typedef struct {
-  char *text; // Menu text 
+  const char *text; // Menu text 
   unsigned char menuType; // 0 = Info, 1 = Headline, 2 = submenu ref, 3 = direct action command, 4 = modify action command
   unsigned int action;
 } const UIMenuEntry;
@@ -167,7 +198,7 @@ typedef struct {
   unsigned char menuType;
   int id; // Type of modification
   int numEntries;
-  UIMenuEntry **entries;
+  const UIMenuEntry * const * entries;
 } const UIMenu;
 
 //#ifdef COMPILE_I2C_DRIVER
@@ -301,19 +332,19 @@ extern unsigned char i2c_read(unsigned char ack);
 #define UI_KEYS_I2C_CLICKENCODER_HIGH_REV(pinA,pinB)  uid.encoderLast = (uid.encoderLast << 2) & 0x0F;if (keymask & pinA) uid.encoderLast |=2;if (keymask & pinB) uid.encoderLast |=1; uid.encoderPos -= pgm_read_byte(&encoder_table[uid.encoderLast]);
 #define UI_KEYS_I2C_BUTTON_HIGH(pin,action_) if((pin & keymask)!=0) action=action_;
 
-#define UI_STRING(name,text) prog_char name[] PROGMEM = text;
+#define UI_STRING(name,text) const char PROGMEM name[] = text;
 
 #define UI_PAGE4(name,row1,row2,row3,row4) UI_STRING(name ## _1txt,row1);UI_STRING(name ## _2txt,row2);UI_STRING(name ## _3txt,row3);UI_STRING(name ## _4txt,row4);\
   UIMenuEntry name ## _1 PROGMEM ={name ## _1txt,0,0};\
   UIMenuEntry name ## _2 PROGMEM ={name ## _2txt,0,0};\
   UIMenuEntry name ## _3 PROGMEM ={name ## _3txt,0,0};\
   UIMenuEntry name ## _4 PROGMEM ={name ## _4txt,0,0};\
-  const UIMenuEntry *name ## _entries[] PROGMEM = {&name ## _1,&name ## _2,&name ## _3,&name ## _4};\
+  const UIMenuEntry * const name ## _entries [] PROGMEM = {&name ## _1,&name ## _2,&name ## _3,&name ## _4};\
   const UIMenu name PROGMEM = {0,0,4,name ## _entries};
 #define UI_PAGE2(name,row1,row2) UI_STRING(name ## _1txt,row1);UI_STRING(name ## _2txt,row2);\
   UIMenuEntry name ## _1 PROGMEM ={name ## _1txt,0,0};\
   UIMenuEntry name ## _2 PROGMEM ={name ## _2txt,0,0};\
-  const UIMenuEntry *name ## _entries[] PROGMEM = {&name ## _1,&name ## _2};\
+  const UIMenuEntry * const name ## _entries[] PROGMEM = {&name ## _1,&name ## _2};\
   const UIMenu name PROGMEM = {0,0,2,name ## _entries};
 #define UI_MENU_ACTION4C(name,action,rows) UI_MENU_ACTION4(name,action,rows)
 #define UI_MENU_ACTION2C(name,action,rows) UI_MENU_ACTION2(name,action,rows)
@@ -322,19 +353,19 @@ extern unsigned char i2c_read(unsigned char ack);
   UIMenuEntry name ## _2 PROGMEM ={name ## _2txt,0,0};\
   UIMenuEntry name ## _3 PROGMEM ={name ## _3txt,0,0};\
   UIMenuEntry name ## _4 PROGMEM ={name ## _4txt,0,0};\
-  const UIMenuEntry *name ## _entries[] PROGMEM = {&name ## _1,&name ## _2,&name ## _3,&name ## _4};\
+  const UIMenuEntry * const name ## _entries[] PROGMEM = {&name ## _1,&name ## _2,&name ## _3,&name ## _4};\
   const UIMenu name PROGMEM = {3,action,4,name ## _entries};
 #define UI_MENU_ACTION2(name,action,row1,row2) UI_STRING(name ## _1txt,row1);UI_STRING(name ## _2txt,row2);\
   UIMenuEntry name ## _1 PROGMEM ={name ## _1txt,0,0};\
   UIMenuEntry name ## _2 PROGMEM ={name ## _2txt,0,0};\
-  const UIMenuEntry *name ## _entries[] PROGMEM = {&name ## _1,&name ## _2};\
+  const UIMenuEntry * const name ## _entries[] PROGMEM = {&name ## _1,&name ## _2};\
   const UIMenu name PROGMEM = {3,action,2,name ## _entries};
 #define UI_MENU_HEADLINE(name,text) UI_STRING(name ## _txt,text);UIMenuEntry name PROGMEM = {name ## _txt,1,0};
 #define UI_MENU_CHANGEACTION(name,row,action) UI_STRING(name ## _txt,row);UIMenuEntry name PROGMEM = {name ## _txt,4,action};
 #define UI_MENU_ACTIONCOMMAND(name,row,action) UI_STRING(name ## _txt,row);UIMenuEntry name PROGMEM = {name ## _txt,3,action};
 #define UI_MENU_ACTIONSELECTOR(name,row,entries) UI_STRING(name ## _txt,row);UIMenuEntry name PROGMEM = {name ## _txt,2,(unsigned int)&entries};
 #define UI_MENU_SUBMENU(name,row,entries) UI_STRING(name ## _txt,row);UIMenuEntry name PROGMEM = {name ## _txt,2,(unsigned int)&entries};
-#define UI_MENU(name,items,itemsCnt) const UIMenuEntry *name ## _entries[] PROGMEM = items;const UIMenu name PROGMEM = {2,0,itemsCnt,name ## _entries}
+#define UI_MENU(name,items,itemsCnt) const UIMenuEntry * const name ## _entries[] PROGMEM = items;const UIMenu name PROGMEM = {2,0,itemsCnt,name ## _entries}
 #define UI_MENU_FILESELECT(name,items,itemsCnt) const UIMenuEntry *name ## _entries[] PROGMEM = items;const UIMenu name PROGMEM = {1,0,itemsCnt,name ## _entries}
 
 class UIDisplay {
@@ -354,6 +385,7 @@ class UIDisplay {
     unsigned int lastButtonAction;
     unsigned long lastButtonStart;
     unsigned long nextRepeat; // Time of next autorepeat
+    unsigned int outputMask; // Output mask for backlight, leds etc.
     int repeatDuration; // Time beween to actions if autorepeat is enabled
     void addInt(int value,byte digits); // Print int into printCols
     void addLong(long value,char digits);
@@ -382,12 +414,14 @@ class UIDisplay {
     void pushMenu(void *men,bool refresh);
     void setStatusP(PGM_P txt);
     void setStatus(char *txt);
+    inline void setOutputMaskBits(unsigned int bits) {outputMask|=bits;}
+    inline void unsetOutputMaskBits(unsigned int bits) {outputMask&=~bits;}
 };
 extern UIDisplay uid;
 
 #include "uiconfig.h"
 
-#define UI_VERSION_STRING "Repetier 0.62"
+#define UI_VERSION_STRING "Repetier " REPETIER_VERSION
 
 #ifdef UI_HAS_I2C_KEYS
 #define COMPILE_I2C_DRIVER
@@ -403,7 +437,7 @@ extern UIDisplay uid;
 
 
 #define UI_INITIALIZE uid.initialize();
-#define UI_FAST uid.fastAction();
+#define UI_FAST if(pwm_count & 4) {uid.fastAction();}
 #define UI_MEDIUM uid.mediumAction();
 #define UI_SLOW uid.slowAction();
 #define UI_STATUS(status) uid.setStatusP(PSTR(status));

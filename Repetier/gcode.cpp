@@ -294,18 +294,18 @@ void emergencyStop() {
      cli(); // Don't allow interrupts to do their work
      kill(false);
      manage_temperatures();
-#ifdef SIMULATE_PWM
-#if NUM_EXTRUDER==1
-     WRITE(EXT0_HEATER_PIN,0 ); 
-#else
-  for(byte e=0;e<NUM_EXTRUDER;e++) {
-    Extruder *ext = &extruder[e];
-    digitalWrite(ext->heaterPin,off);
-  }
+     pwm_pos[0] = pwm_pos[1] = pwm_pos[2] = pwm_pos[3]=0;
+#if EXT0_HEATER_PIN>-1
+    WRITE(EXT0_HEATER_PIN,0);
 #endif
-#endif // SIMULATE_PWM
-#ifdef SIMULATE_FAN_PWM
-      WRITE(FAN_PIN,0 ); 
+#if defined(EXT1_HEATER_PIN) && EXT1_HEATER_PIN>-1
+    WRITE(EXT1_HEATER_PIN,0);
+#endif
+#if defined(EXT2_HEATER_PIN) && EXT2_HEATER_PIN>-1
+    WRITE(EXT2_HEATER_PIN,0);
+#endif
+#if FAN_PIN>-1
+    WRITE(FAN_PIN,0);
 #endif
      while(1) {}
 }
