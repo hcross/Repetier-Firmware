@@ -336,7 +336,7 @@ reading of the extruder and heated bed. */
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define MAXTEMP 250
+#define MAXTEMP 275
 
 /**
 Normally you need a PWM controlable output, to define different fan speeds. If you
@@ -457,9 +457,9 @@ on this endstop.
 // can set it on for safety.
 #define ALWAYS_CHECK_ENDSTOPS true
 // maximum positions in mm - only fixed numbers!
-#define X_MAX_LENGTH 145
+#define X_MAX_LENGTH 127
 #define Y_MAX_LENGTH 133
-#define Z_MAX_LENGTH 94
+#define Z_MAX_LENGTH 115
 
 // ##########################################################################################
 // ##                           Movement settings                                          ##
