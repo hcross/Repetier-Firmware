@@ -93,7 +93,7 @@
 #define EXT0_HEATER_PIN HEATER_0_PIN
 #define EXT0_STEP_PIN E_STEP_PIN
 #define EXT0_DIR_PIN E_DIR_PIN
-// set to 0/1 for normal / inverse direction
+// set to false/true for normal / inverse direction
 #define EXT0_INVERSE false
 #define EXT0_ENABLE_PIN E_ENABLE_PIN
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -156,6 +156,98 @@ L is the linear factor and seems to be working better then the quadratic depende
 */
 #define EXT0_ADVANCE_K 0.0f
 #define EXT0_ADVANCE_L 0.0f
+
+
+// =========================== Configuration for second extruder ========================
+#define EXT1_X_OFFSET 0
+#define EXT1_Y_OFFSET 0
+// for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
+#define EXT1_STEPS_PER_MM 373
+// What type of sensor is used?
+// 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
+// 2 is 200k thermistor
+// 3 is mendel-parts thermistor (EPCOS G550)
+// 4 is 10k thermistor
+// 5 is userdefined thermistor table 0
+// 6 is userdefined thermistor table 1
+// 7 is userdefined thermistor table 2
+// 50 is userdefined thermistor table 0 for PTC thermistors
+// 51 is userdefined thermistor table 0 for PTC thermistors
+// 52 is userdefined thermistor table 0 for PTC thermistors
+// 99 Generic thermistor table
+// 100 is AD595
+// 101 is MAX6675
+#define EXT1_TEMPSENSOR_TYPE 1
+// Position in analog input table below for reading temperatures or pin enabling SS for MAX6675
+#define EXT1_TEMPSENSOR_PIN 1
+// WHich pin enables the heater
+#define EXT1_HEATER_PIN -1
+#define EXT1_STEP_PIN E_STEP_PIN
+#define EXT1_DIR_PIN E_DIR_PIN
+// set to 0/1 for normal / inverse direction
+#define EXT1_INVERSE false
+#define EXT1_ENABLE_PIN E_ENABLE_PIN
+// For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
+#define EXT1_ENABLE_ON false
+// The following speed settings are for skeinforge 40+ where e is the
+// length of filament pulled inside the heater. For repsnap or older
+// skeinforge use hiher values.
+//  Overridden if EEPROM activated.
+#define EXT1_MAX_FEEDRATE 1500
+// Feedrate from halted extruder in mm/s
+//  Overridden if EEPROM activated.
+#define EXT1_MAX_START_FEEDRATE 18
+// Acceleration in mm/s^2
+//  Overridden if EEPROM activated.
+#define EXT1_MAX_ACCELERATION 6000
+/** Type of heat manager for this extruder. 
+- 0 = Simply switch on/off if temperature is reached. Works always.
+- 1 = PID Temperature control. Is better but needs good PID values. Defaults are a good start for most extruder.
+ Overridden if EEPROM activated.
+*/
+#define EXT1_HEAT_MANAGER 1
+/** Wait x seconds, after reaching target temperature. Only used for M109.  Overridden if EEPROM activated. */
+#define EXT1_WATCHPERIOD 20
+
+/** \brief The maximum value, I-gain can contribute to the output. 
+
+A good value is slightly higher then the output needed for your temperature.
+Values for starts:
+130 => PLA for temperatures from 170-180°C
+180 => ABS for temperatures around 240°C
+
+The precise values may differ for different nozzle/resistor combination. 
+ Overridden if EEPROM activated.
+*/
+#define EXT1_PID_INTEGRAL_DRIVE_MAX 130
+/** \brief lower value for integral part
+
+The I state should converge to the exact heater output needed for the target temperature.
+To prevent a long deviation from the target zone, this value limits the lower value.
+A good start is 30 lower then the optimal value. You need to leave room for cooling.
+ Overridden if EEPROM activated.
+*/
+#define EXT1_PID_INTEGRAL_DRIVE_MIN 50
+/** P-gain in 0,01 units.  Overridden if EEPROM activated. */
+#define EXT1_PID_PGAIN   500
+/** I-gain in 0,001 units 
+
+WATCH OUT: This value was in 0,01 units in earlier versions!
+ Overridden if EEPROM activated.
+*/
+#define EXT1_PID_IGAIN   1
+/** Dgain in 0,01 units.  Overridden if EEPROM activated.*/
+#define EXT1_PID_DGAIN 3000
+// maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
+#define EXT1_PID_MAX 255
+/** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
+K is the factor for the quadratic term, which is normally disabled in newer versions. If you want to use
+the quadratic factor make sure ENABLE_QUADRATIC_ADVANCE is defined.
+L is the linear factor and seems to be working better then the quadratic dependency.
+*/
+#define EXT1_ADVANCE_K 0.0f
+#define EXT1_ADVANCE_L 0.0f
+
 
 /** PID control only works target temperature +/- PID_CONTROL_RANGE.
 If you get much overshoot at the first temperature set, because the heater is going full power to long, you
@@ -452,6 +544,12 @@ on this endstop.
 #define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 2
 #define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 2
 
+// When you have several endstops in one circuit you need to disable it after homing by moving a
+// small amount back. This is also the case with H-belt systems.
+#define ENDSTOP_X_BACK_ON_HOME 0
+#define ENDSTOP_Y_BACK_ON_HOME 0
+#define ENDSTOP_Z_BACK_ON_HOME 0
+
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
 // false signals from your endstops. If your endstops don't give false signals, you
 // can set it on for safety.
@@ -479,10 +577,10 @@ on this endstop.
 */
 #define MAX_INACTIVE_TIME 0L
 /** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
-    The axis order in all axis related arrays is X, Y, Z, E 
+    The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE {15000, 15000, 100, 100}
+#define MAX_FEEDRATE {15000, 15000, 100}
 /** Speed in mm/min for finding the home position.  Overridden if EEPROM activated. */
 #define HOMING_FEEDRATE {2400,2400,100}
 
@@ -510,7 +608,7 @@ additional stepper interrupts with all it's overhead. As a result you can go as 
 /** If you need frequencies off more then 30000 you definitely need to enable this. If you have only 1/8 stepping 
 enabling this may cause to stall your moves when 20000Hz is reached.
 */
-#define ALLOW_QUADSTEPPING false
+#define ALLOW_QUADSTEPPING true
 /** If you reach STEP_DOUBLER_FREQUENCY the firmware will do 2 or 4 steps with nearly no delay. That can be too fast
 for some printers causing an early stall. 
 
@@ -527,12 +625,12 @@ If the interval at full speed is below this value, smoothing is disabled for tha
 
 /** \brief Use RAMP acceleration for faster printing speed. */
 #ifdef RAMP_ACCELERATION
-/** \brief X, Y, Z and E max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high! 
+/** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high! 
  Overridden if EEPROM activated.
 */
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND {3000,3000,100,1000} 
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND {3000,3000,100} 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND {3000,3000,100,1000}
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND {3000,3000,100}
 #endif
 
 /** \brief Maximum allowable jerk.
@@ -761,7 +859,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 */
 #define EEPROM_MODE 1
 /** Comment out (using // at the start of the line) to disable SD support: */
-//#define SDSUPPORT 1
+#define SDSUPPORT 0
 /** Show extended directory including file length. Don't use this with pronterface! */
 //#define SD_EXTENDED_DIR
 

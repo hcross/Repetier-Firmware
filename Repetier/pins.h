@@ -302,8 +302,8 @@
 #define LED_PIN            13
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1
-#define SCL                21
-#define SDA                20
+//#define SCL                21
+//#define SDA                20
 
 #define E0_PINS E_STEP_PIN,E_DIR_PIN,E_ENABLE_PIN,
 #define E1_PINS
@@ -333,7 +333,8 @@
 // SPI for Max6675 Thermocouple 
 
 #ifndef SDSUPPORT
-// these pins are defined in the SD library if building with SD support  #define SCK_PIN          52
+// these pins are defined in the SD library if building with SD support  
+  #define SCK_PIN          52
   #define MISO_PIN         50
   #define MOSI_PIN         51
   #define MAX6675_SS       53

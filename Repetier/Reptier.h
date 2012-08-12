@@ -32,7 +32,7 @@
 #include "SdFat.h"
 extern void initsd();
 #endif
-#define REPETIER_VERSION "0.70"
+#define REPETIER_VERSION "0.71"
 
 #define uint uint16_t
 #define uint8 uint8_t
@@ -238,8 +238,6 @@ inline void extruder_set_direction(byte dir) {
     break;
 #endif
   }
-
-  digitalWrite(current_extruder->directionPin,dir!=0 ? (!(current_extruder->invertDir)) : current_extruder->invertDir);
 #endif
 }
 inline void extruder_enable() {
@@ -279,7 +277,7 @@ extern void change_feedrate_multiply(int factor); ///< Set feedrate multiplier
 extern void set_fan_speed(int speed,bool wait); /// Set fan speed 0..255
 extern void home_axis(bool xaxis,bool yaxis,bool zaxis); /// Home axis
 extern byte get_coordinates(GCode *com);
-extern void move_steps(long x,long y,long z,long e,float feedrate,bool waitEnd);
+extern void move_steps(long x,long y,long z,long e,float feedrate,bool waitEnd,bool check_endstop);
 extern void queue_move(byte check_endstops,byte pathOptimize);
 extern void linear_move(long steps_remaining[]);
 extern inline void disable_x();
