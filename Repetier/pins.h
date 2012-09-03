@@ -463,7 +463,8 @@
 #endif
 #if MOTHERBOARD == 6
     #define KNOWN_BOARD 1
-    #ifndef __AVR_ATmega644P__
+    //#ifndef __AVR_ATmega644P__
+    #if !defined(__AVR_ATmega644P__) && !defined(__AVR_ATmega1284P__)
       #error Oops!  Make sure you have 'Sanguino' selected from the 'Tools -> Boards' menu.
     #endif
 
@@ -602,8 +603,8 @@
 
 #define Y_STEP_PIN         30
 #define Y_DIR_PIN          31
-#define Y_ENABLE_PIN       26
-#define Y_MIN_PIN           20
+#define Y_ENABLE_PIN       20 //26
+#define Y_MIN_PIN          26 // 20
 #define Y_MAX_PIN          -1
 
 #define Z_STEP_PIN         32
