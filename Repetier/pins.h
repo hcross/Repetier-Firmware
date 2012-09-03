@@ -263,7 +263,7 @@
 
 #define HEATER_0_PIN       10
 //#ifdef HUXLEY_HEATED_BED
-  #define HEATER_1_PIN      57
+  #define HEATER_1_PIN      8
 //#else
 //  #define HEATER_1_PIN      8
 //#endif

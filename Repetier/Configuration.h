@@ -53,11 +53,11 @@
 
 
 /** \brief Number of steps for a 1mm move in x direction. Overridden if EEPROM activated. */
-#define XAXIS_STEPS_PER_MM 3200/50.8
+#define XAXIS_STEPS_PER_MM 80
 /** \brief Number of steps for a 1mm move in y direction  Overridden if EEPROM activated.*/
-#define YAXIS_STEPS_PER_MM 3200/50.8
+#define YAXIS_STEPS_PER_MM 80
 /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-#define ZAXIS_STEPS_PER_MM 128000/25.4
+#define ZAXIS_STEPS_PER_MM 1511.81102362205
 
 // ##########################################################################################
 // ##                           Extruder configuration                                     ##
@@ -70,8 +70,7 @@
 #define EXT0_Y_OFFSET 0
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
 //#define EXT0_STEPS_PER_MM 564.38
-//#define EXT0_STEPS_PER_MM 552.1 //1.75mm
-#define EXT0_STEPS_PER_MM 604.67 // 3mm
+#define EXT0_STEPS_PER_MM 564.38
 // What type of sensor is used?
 // 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
 // 2 is 200k thermistor
@@ -482,13 +481,13 @@ on this endstop.
 #define ENDSTOP_PULLUP_X_MIN true
 #define ENDSTOP_PULLUP_Y_MIN true
 #define ENDSTOP_PULLUP_Z_MIN true
-#define ENDSTOP_PULLUP_X_MAX true
-#define ENDSTOP_PULLUP_Y_MAX true
-#define ENDSTOP_PULLUP_Z_MAX true
+#define ENDSTOP_PULLUP_X_MAX false
+#define ENDSTOP_PULLUP_Y_MAX false
+#define ENDSTOP_PULLUP_Z_MAX false
 
 //set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING true
-#define ENDSTOP_Y_MIN_INVERTING true
+#define ENDSTOP_X_MIN_INVERTING false
+#define ENDSTOP_Y_MIN_INVERTING false
 #define ENDSTOP_Z_MIN_INVERTING false
 //#define ENDSTOP_X_MAX_INVERTING false
 //#define ENDSTOP_Y_MAX_INVERTING false
@@ -514,8 +513,8 @@ on this endstop.
 
 // Inverting axis direction
 #define INVERT_X_DIR false
-#define INVERT_Y_DIR false
-#define INVERT_Z_DIR true
+#define INVERT_Y_DIR true
+#define INVERT_Z_DIR false
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
@@ -555,9 +554,9 @@ on this endstop.
 // can set it on for safety.
 #define ALWAYS_CHECK_ENDSTOPS true
 // maximum positions in mm - only fixed numbers!
-#define X_MAX_LENGTH 127
-#define Y_MAX_LENGTH 133
-#define Z_MAX_LENGTH 115
+#define X_MAX_LENGTH 180
+#define Y_MAX_LENGTH 240
+#define Z_MAX_LENGTH 150
 
 // ##########################################################################################
 // ##                           Movement settings                                          ##
