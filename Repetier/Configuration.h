@@ -49,6 +49,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 #define NUM_EXTRUDER 1
 
 //// The following define selects which electronics board you have. Please choose the one that matches your setup
+// Gen3 PLUS for RepRap Motherboard V1.2 = 21
 // MEGA/RAMPS up to 1.2       = 3
 // RAMPS 1.3/RAMPS 1.4        = 33
 // Gen6                       = 5 
@@ -450,6 +451,8 @@ If you don't have R1, set it to 0.
 The capacitor is for reducing noise from long thermistor cable. If you don't have have one, it's OK.
 
 If you don't need the generic table, uncomment the following define.
+//#define USE_GENERIC_THERMISTORTABLE_1
+
 */
 #define USE_GENERIC_THERMISTORTABLE 1
 
@@ -850,6 +853,7 @@ Overridden if EEPROM activated.
 /** \brief Number of moves we can cache in advance.
 
 This number of moves can be cached in advance. If you wan't to cache more, increase this. Especially on
+
 many very short moves the cache may go empty. The minimum value is 5.
 */
 #define MOVE_CACHE_SIZE 16
@@ -1041,6 +1045,9 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 //#define SD_EXTENDED_DIR
 // If you want support for G2/G3 arc commands set to true, otherwise false.
 #define ARC_SUPPORT true
+/** If a checksum is send, all future comamnds must also contain a checksum. Increases reliability especially for binary protocol. */
+#define FEATURE_CHECKSUM_FORCED true
+
 
 /** You can store the current position with M401 and go back to it with M402. 
    This works only if feature is set to true. */
@@ -1129,8 +1136,3 @@ Values must be in range 1..255
 #define UI_SET_MAX_HEATED_BED_TEMP 120
 #define UI_SET_MIN_EXTRUDER_TEMP   160
 #define UI_SET_MAX_EXTRUDER_TEMP   270
-#define UI_SET_EXTRUDER_FEEDRATE 2 // mm/sec
-#define UI_SET_EXTRUDER_RETRACT_DISTANCE 3 // mm
-
-#endif
-
